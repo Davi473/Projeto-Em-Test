@@ -8,12 +8,13 @@ export class Carteira
     constructor (
         private lancamentos: InvestimentosLancamentos[]
     ) {
-        this.ativos = {};
-        this.tipos = {};
+        
     }
 
     getConsolidado()
     {
+        this.ativos = {};
+        this.tipos = {};
         for (let i = 0; i < this.lancamentos.length; i++)
         {
             const lancamentosCompra = this.lancamentos[i];
