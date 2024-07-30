@@ -3,7 +3,8 @@ import { InvestimentosLancamentos } from "../Objecto/InvestimentosLancamentos";
 
 export class InvestimentoModel
 {
-  lancamentosBanco: InvestimentosLancamentos[];
+  private lancamentosBanco: InvestimentosLancamentos[];
+  private carteira: Carteira;
 
   constructor()
   {
@@ -16,11 +17,26 @@ export class InvestimentoModel
       new InvestimentosLancamentos("FIIs","MXRF11",5,10.44,new Date("2024-04-08")),
       new InvestimentosLancamentos("ACAO","BBDC4",1,13.73,new Date("2024-02-29"))
     ]
+    this.carteira = new Carteira(this.lancamentosBanco);
   }
 
   getLancamentos(): Carteira
   {
-    const lancamentos = new Carteira(this.lancamentosBanco);
-    return lancamentos.getConsolidado();
+    return this.carteira.getConsolidado();
+  }
+
+  saveLancamentos(req: Request): void
+  {
+    const lancamentoNew = req.body
+    this.lancamentosBanco.push(
+      new InvestimentosLancamentos(
+        lancamentoNew.tipo, 
+        lancamentoNew.ticket, 
+        lancamentoNew.quantidade, 
+        lancamentoNew.preco, 
+        lancamentoNew.data, 
+        lancamentoNew.compra
+      ))
+    this.getLancamentos();
   }
 }

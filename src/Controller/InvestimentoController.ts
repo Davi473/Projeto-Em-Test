@@ -11,5 +11,10 @@ export class InvestimentoController
       const lancamentos = investimentoModel.getLancamentos();
       return lancamentos;
     })
+
+    httpServer.register("post", "/api/investimentosNovos", async function(req: Request, res: Response)
+    {
+      await investimentoModel.saveLancamentos(req);
+    })
   }
 }
