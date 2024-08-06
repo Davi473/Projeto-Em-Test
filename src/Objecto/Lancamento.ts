@@ -1,22 +1,34 @@
-export class InvestimentosLancamentos
+export default class Lancamento
 {
   private total: number = 0;
 
   constructor (
-    private tipo: string,
     private ticket: string,
     private quantidade: number,
     private preco: number,
     private data: Date,
-    private compra: boolean = true
+    private compra: boolean = true,
+    private usuario: string,
+    private tipo: string,
+    private id: string | undefined = undefined
   )
   {
     this.total = this.quantidade * this.preco;
   }
 
-  getTipo ()
+  getUsuario()
   {
-    return this.tipo;
+    return this.usuario;
+  }
+  
+  getTipo()
+  {
+    return this.tipo
+  }
+
+  getId ()
+  {
+    return this.id
   }
 
   getTicket ()

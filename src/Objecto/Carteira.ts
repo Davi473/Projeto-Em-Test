@@ -1,12 +1,15 @@
-import { InvestimentosLancamentos } from "./InvestimentosLancamentos";
+import Lancamento from "./Lancamento";
 
 
-export class Carteira
+
+export default class Carteira
 {
     private tipos: any;
     private ativos: any;
+    private ticket: any;
+    private lancamentosCompra: any;
     constructor (
-        private lancamentos: InvestimentosLancamentos[]
+        private lancamentos: Lancamento[]
     ) {
         
     }
@@ -15,38 +18,61 @@ export class Carteira
     {
         this.ativos = {};
         this.tipos = {};
+        this.ticket = "";
+        this.addTicket();
+        this.addTipo();
+        return this.tipos
+        
+    }
+
+    private addTicket()
+    {
         for (let i = 0; i < this.lancamentos.length; i++)
         {
-            const lancamentosCompra = this.lancamentos[i];
-            const ticket = lancamentosCompra.getTicket();
-          
-            if(!this.ativos[ticket])
+            this.lancamentosCompra = this.lancamentos[i];
+            this.ticket = this.lancamentosCompra.getTicket();
+            
+            if(!this.ativos[this.ticket])
             {
-                this.ativos[ticket] = {
-                    quantidade: lancamentosCompra.getQuantidade(),
-                    precoMedio: lancamentosCompra.getTotal(),
-                    tipo: lancamentosCompra.getTipo()
+                this.ativos[this.ticket] = {
+                    quantidade: this.lancamentosCompra.getQuantidade(),
+                    precoMedio: this.lancamentosCompra.getTotal(),
+                    tipo: this.lancamentosCompra.getTipo()
                 }
             }
             else 
             {
-                if(lancamentosCompra.isCompra())
-                {
-                    this.ativos[ticket].quantidade += lancamentosCompra.getQuantidade();
-                    this.ativos[ticket].precoMedio += lancamentosCompra.getTotal();
-                }
-                else
-                {
-                    this.ativos[ticket].quantidade -= lancamentosCompra.getQuantidade();
-                    this.ativos[ticket].precoMedio -= lancamentosCompra.getTotal();
-                    
-                    if(this.ativos[ticket].quantidade >= 0)
-                    {
-                        delete this.ativos[ticket];
-                    }
-                }
+                this.compraOuVenda()
             }  
         }
+    }
+
+    private compraOuVenda()
+    {
+        if(this.lancamentosCompra.isCompra())
+        {
+            this.ativos[this.ticket].quantidade += this.lancamentosCompra.getQuantidade();
+            this.ativos[this.ticket].precoMedio += this.lancamentosCompra.getTotal();
+        }
+        else
+        {
+            this.ativos[this.ticket].quantidade -= this.lancamentosCompra.getQuantidade();
+            this.ativos[this.ticket].precoMedio -= this.lancamentosCompra.getTotal();
+            
+            this.deleteAtivoSemValor();
+        }
+    }
+
+    private deleteAtivoSemValor()
+    {
+        if(this.ativos[this.ticket].quantidade >= 0)
+        {
+            delete this.ativos[this.ticket];
+        }
+    }
+
+    private addTipo()
+    {
         for (const ativo in this.ativos)
         {
             const lancamentoMedia = this.ativos[ativo];
@@ -62,6 +88,5 @@ export class Carteira
             }
             delete this.ativos[ativo].tipo
         }
-        return this.tipos
     }
 }

@@ -2,7 +2,7 @@ import express, {Express, Request, Response} from "express";
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-export class HttpServer
+export default class HttpServer
 {
 
   private app: Express;
@@ -17,7 +17,7 @@ export class HttpServer
   {
     this.app[method](url, async function(req: Request, res: Response) 
     {
-      const output = await callback(req, req);
+      const output = await callback(req.body, res);
       res.json(output);
     })
   }
